@@ -1,0 +1,58 @@
+{% extends 'base_nav_bar.html' %}
+
+
+
+{% block maincontent %}
+    <div class="container mt-8">
+    <table id="tabelica" class="table table-striped table-bordered">
+        <thead id="redic" class="thead-dark">
+            <tr>
+                <th>Ime Prezime</th>
+                <th>Username</th>
+                <th>Mail</th>
+                <th>Broj Telefona</th>
+                <th>Datum Rođenja</th>
+                <th>Mesto Rođenja</th>
+                <th>Uloga</th>
+                <th>Info o Kartici</th>
+                <th>Prihvati/Odbij</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for zahtev in zahtevi %}
+            <tr>
+
+                <td>{{ zahtev.ime }} {{ zahtev.prezime }}</td>
+                <td>{{ zahtev.korime }}</td>
+                <td>{{ zahtev.email }}</td>
+                <td>{{ zahtev.brojtelefona }}</td>
+                <td>{{ zahtev.datumrodjenja }}</td>
+                <td>{{ zahtev.mestorodjenja }}</td>
+                <td>{{ zahtev.uloga }}</td>
+                <td>**** **** **** {{ zahtev.brojkartice }}</td>
+                <td>
+                    <form method="post">
+                                        {% csrf_token %}
+
+                <button type="submit" class="btn btn-success btn-sm" name="accept-{{ zahtev.idzah }}"  onclick="deleterow(this)">Prihvati</button>
+                <button type="submit" class="btn btn-danger btn-sm" name="reject-{{ zahtev.idzah }}"  onclick="deleterow(this)">Odbij</button>
+               </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block more %}
+    
+    <script>
+    function deleterow(button) {
+    var row = button.closest('tr'); 
+    row.remove();
+}
+    </script>
+{% endblock %}

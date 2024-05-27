@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exhibition Created Successfully</title>
+</head>
+<body>
+
+    <!-- Forma koja automatski šalje POST zahtev na 'profile-info' -->
+    <form id="redirectForm" action="{% url 'profile_info' %}" method="post">
+        {% csrf_token %}
+        <input type="submit" style="display: none;">
+    </form>
+
+    <!-- JavaScript za automatsko podnošenje forme -->
+    <script>
+        // Automatski podnošenje forme kada se stranica učita
+        window.onload = function() {
+            document.getElementById("redirectForm").submit();
+        };
+    </script>
+</body>
+</html>

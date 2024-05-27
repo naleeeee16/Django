@@ -1,0 +1,158 @@
+{% extends 'base_profile.html' %}
+{% load static %}
+
+
+ {% block profilemore %}
+     {%  if  myprofile %}
+
+
+         <div class="container">
+          <div class="row">
+              <div class="col-lg-4 col-md-6">
+                  <form action="{% url 'change_info' %}" method="post" id="deleteForm">
+                     {% csrf_token %}
+                  <button class="btn btn-outline-linear btn-outline-light m-0" type="submit" >
+                      Izmeni profil
+                  </button>
+                  </form>
+              </div>
+          </div>
+    {% elif request.user.is_authenticated %}
+            {% if request.user.user_type == 'admin' %}
+                <div class="container">
+          <form action="{% url 'delete_user' %}" method="post" id="deleteForm">
+            {% csrf_token %}
+            <input type="hidden" name="username" value="{{ username }}">
+            <button class="btn btn-outline-linear btn-outline-light m-0" type="button" onclick="confirmDelete()">
+                Izbriši korisnika
+            </button>
+        </form>
+          </div>
+        {% endif %}
+
+         {% endif %}
+<script>
+    function confirmDelete() {
+        if (confirm("Da li ste sigurni da želite da izbrišete ovog korisnika?")) {
+            document.getElementById("deleteForm").submit();
+        }
+    }
+</script>
+
+  </div>
+
+    {% endblock %}
+{% block profilecontent %}
+    {%  if not myprofile %}
+          <div class="profile-info">
+        <div class="row">
+            <div class="col-md-6 text-center">
+
+
+
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                    <label for="email" class="me-2"><strong>Email adresa:</strong></label>
+                    <span id="email">{{ email }}</span>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                    <label for="datumKreiranja" class="me-2"><strong>Datum kreiranja naloga:</strong></label>
+                    <span id="datumKreiranja">{{ joined }}.</span>
+                </div>
+                    <div class="d-flex align-items-center justify-content-center mb-3">
+                    <label for="datumRodjenja" class="me-2"><strong>Datum rođenja:</strong></label>
+                    <span id="datumRodjenja">{{ birthdate }}.</span>
+                </div>
+
+            </div>
+
+            <div class="col-md-6 text-center">
+
+
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                    <label for="nftKupljenih" class="me-2"><strong>Broj NFT kupljenih:</strong></label>
+                    <span id="nftKupljenih">{{ buy_number }}</span>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                    <label for="nftProdatih" class="me-2"><strong>Broj NFT prodatih:</strong></label>
+                    <span id="nftProdatih">{{ sell_number }}</span>
+                </div>
+                 <div class="d-flex align-items-center justify-content-center mb-3">
+                    <label for="numnft" class="me-2"><strong>Broj NFT u kolekciji:</strong></label>
+                    <span id="numnft">{{ num_of_nft }}</span>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="vertical-line my-4"></div> <!-- Elegantna vertikalna crta između informacija -->
+    </div>
+
+
+    {% else %}
+
+      <div class="profile-info">
+        <div class="row">
+            <div class="col-md-6 text-center">
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                    <label for="imePrezime" class="me-2"><strong>Ime prezime:</strong></label>
+                    <span id="imePrezime"> {{ name }} {{ surname }}</span>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                    <label for="datumRodjenja" class="me-2"><strong>Datum rođenja:</strong></label>
+                    <span id="datumRodjenja">{{ birthdate }}.</span>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                    <label for="mestoRodjenja" class="me-2"><strong>Mesto rođenja:</strong></label>
+                    <span id="mestoRodjenja">{{ birthplace }}</span>
+                </div>
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                    <label for="email" class="me-2"><strong>Email adresa:</strong></label>
+                    <span id="email">{{ email }}</span>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                    <label for="brojTelefona" class="me-2"><strong>Broj telefona:</strong></label>
+                    <span id="brojTelefona">{{ phone }}</span>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                    <label for="infoKartica" class="me-2"><strong>Informacije o kartici:</strong></label>
+                    <span id="infoKartica">{{ card }}</span>
+                </div>
+
+
+            </div>
+
+            <div class="col-md-6 text-center">
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                    <label for="datumKreiranja" class="me-2"><strong>Datum kreiranja naloga:</strong></label>
+                    <span id="datumKreiranja">{{ joined }}.</span>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                    <label for="nftKupljenih" class="me-2"><strong>Broj NFT kupljenih:</strong></label>
+                    <span id="nftKupljenih">{{ buy_number }}</span>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                    <label for="nftProdatih" class="me-2"><strong>Broj NFT prodatih:</strong></label>
+                    <span id="nftProdatih">{{ sell_number }}</span>
+                </div>
+                 <div class="d-flex align-items-center justify-content-center mb-3">
+                    <label for="numnft" class="me-2"><strong>Broj NFT u kolekciji:</strong></label>
+                    <span id="numnft">{{ num_of_nft }}</span>
+                </div>
+
+            </div>
+        </div>
+          <div class="vertical-line my-4"></div> <!-- Elegantna vertikalna crta između informacija -->
+    </div>
+
+    {% endif %}
+
+
+{%  endblock  %}

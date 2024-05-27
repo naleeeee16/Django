@@ -1,0 +1,247 @@
+{% extends 'base_nav_bar.html' %}
+{% block additional_style %}
+       <style>
+        /* Dodatni stil za centriranje i postavljanje slika */
+        .swiper-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .swiper-slide {
+            width: 25%;
+            flex-shrink: 0;
+        }
+
+        /* Dodatni stil za carousel-item */
+        .carousel-item {
+            min-height: 280px;
+        }
+    </style>
+ <style>
+    /* Dodatni stil za prilagođavanje izgleda */
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .profile-container {
+        background-color: #fff;
+        padding: 20px;
+        margin-top: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-picture {
+        max-width: 150px;
+        border-radius: 50%;
+        margin-bottom: 20px;
+    }
+
+    .profile-info label {
+        font-weight: bold;
+    }
+
+    .user-options ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .user-options li {
+        margin-bottom: 10px;
+    }
+
+    .info-row{
+        font-size: 30px;
+    }
+
+    .rating {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.rating > input {
+    display: none;
+}
+
+.rating > label {
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.rating > label:before {
+    content: '\2605';
+    font-size: 36px;
+}
+
+.rating > input:checked ~ label:before,
+.rating > input:checked ~ label ~ label:before {
+    content: '\2606';
+}
+
+</style>
+
+<style>
+  /* Dodatna margina između carousela */
+  #myCarousel1,
+  #myCarousel2 {
+      margin-bottom: 20px; /* Prilagodite vrednost prema potrebi */
+  }
+</style>
+</head>
+
+<style>
+    /* Stilizacija tekstualnih polja */
+    input[type="text"],
+    textarea {
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    /* Stilizacija labela */
+    label {
+        font-weight: bold;
+    }
+</style>
+{%  endblock %}
+
+
+{% block maincontent %}
+    {%  load static %}
+    <div class="padding-medium">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 style="font-weight:bold; font-size:50px; text-align: center; color:white; margin-bottom: 100px;">Kreiranje NFT</h1>
+                </div>
+                <div class="row ">
+                    <div class="col-md-6 col-sm-12">
+                        <img src="{% static 'images/empty_file.png' %}" alt="" class="img-fluid" style="width: 512px; height: 512px">
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+
+                        <div id="postaviDatoteku" style="display: inline-block; font-size: 30px;">
+                           Postavi datoteku
+                        </div>
+                        <div id="preuzmiDatoteku" style="display: inline-block; font-size: 30px; margin-left: 100px">
+                           Preuzmi datoteku
+                        </div>
+
+                        <br>
+
+                        <div>
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <div id="uploadForm" style="display:block;">
+                                <label for="fileUpload">Izaberi datoteku:</label>
+                                <input type="file" id="fileUpload" name="fileUpload"><br>
+                            </div>
+
+                            <div id="downloadForm" style="display:none;">
+                                <label for="nft_url">URL adresa:</label>
+                                <input type="text" id="nft_url" name="nft_url" placeholder="Unesite URL do NFT-a"><br>
+                                 <button type="button" id="showNftButton">Prikazi NFT</button><br>
+                            </div>
+
+                            <label for="nftName">Ime NFT:</label>
+                            <input type="text" id="nftName" name="nftName"><br>
+
+                            <label for="nftPrice">Cena NFT:</label>
+                            <input type="text" id="nftPrice" name="nftPrice"><br>
+
+                            <label for="nftDescription">Opis NFT:</label>
+                            <textarea id="nftDescription" name="nftDescription" rows="4" cols="50"></textarea>
+
+                            <button type="submit" id="submitBtn" class="btn btn-lg"  type="button" style="background-color: #8D52F5; margin-top: 58px;">Potvrdi</button>
+                        </form>
+                    </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+
+    document.getElementById('postaviDatoteku').addEventListener('click', function() {
+                uploadForm.style.display = 'block';
+                downloadForm.style.display = 'none';
+                document.querySelector('.col-md-6 img').src = "../static/images/empty_file.png/";
+                document.querySelector('#nftName').value = ""
+                document.querySelector('#nftDescription').value = ""
+                document.querySelector('#nftPrice').value = ""
+    });
+    document.getElementById('preuzmiDatoteku').addEventListener('click', function() {
+                downloadForm.style.display = 'block';
+                uploadForm.style.display = 'none';
+                document.querySelector('.col-md-6 img').src = "../static/images/empty_file.png/";
+                document.querySelector('#nftName').value = ""
+                document.querySelector('#nftDescription').value = ""
+                document.querySelector('#nftPrice').value = ""
+
+
+    });
+
+    document.getElementById('showNftButton').addEventListener('click', function() {
+
+            // Get contract address and token ID from input fields
+            const nftUrl = document.getElementById('nft_url').value;
+
+            const parts = nftUrl.split('/');
+
+            const token_id = parts.pop(); // Poslednji element u nizu
+            const contractAddress = parts.pop(); // Pretposlednji element u nizu
+            const chain = parts.pop();
+
+
+            // OpenSea API Endpoint for fetching NFT metadata for a single NFT: https://docs.opensea.io/reference/get_nft
+            let apiUrl = 'https://api.opensea.io/api/v2/chain/' + chain + '/contract/' + contractAddress + '/nfts/' + token_id;
+            if(chain == "base"){
+                apiUrl = 'https://api.opensea.io/api/v2/chain/' + chain + '/contract/' + contractAddress + '/nfts/';
+            }
+            console.log(apiUrl);
+
+            // Make a fetch request to the API with headers
+            fetch(apiUrl, {
+                headers: {
+                    'X-API-KEY': `e0d9ad00e95945918aec9ec56c057650`,
+                    'Content-Type': 'application/json',
+                    // Add any other headers required by your API
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+
+                    document.querySelector('.col-md-6 img').src = data.nft.image_url;
+                    document.querySelector('#nftName').value = data.nft.name
+                    document.querySelector('#nftDescription').value = data.nft.description;
+                    document.querySelector('#nftPrice').value = data.nft.traits[0].value;
+
+                })
+                .catch(error => {
+                    console.error('Error fetching image:', error);
+                });
+    });
+</script>
+
+<script>
+    document.getElementById('fileUpload').addEventListener('change', function() {
+    const file = this.files[0];     if (file) {
+        const reader = new FileReader(); // Kreiramo FileReader objekat
+        reader.onload = function(e) {
+            document.querySelector('.col-md-6 img').src = e.target.result; // Postavljamo izabranu sliku
+        }
+        reader.readAsDataURL(file); // Čitamo datoteku kao URL
+    }
+});
+</script>
+
+{% endblock %}

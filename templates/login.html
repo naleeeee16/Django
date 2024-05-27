@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block additional_style %}
+
+    <style>
+    
+        .input-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .input-row label {
+            width: 120px;
+        }
+
+        .input-row input {
+            flex: 1;
+            padding: 5px;
+        }
+        .login-button {
+            padding: 10px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .login-button:hover {
+            background-color: #ddd;
+        }
+
+    </style>
+    
+{% endblock %}
+
+{% block navbar3 %}
+    <div class="btn-wrap d-flex my-4 my-lg-4 ">
+        <a href="{% url 'login' %}" class="btn btn-linear btn-medium">Prijavi se</a>
+        <a href="{% url 'register' %}" class="btn btn-outline-linear btn-medium m-0">Registruj se</a>
+    </div>
+{% endblock %}
+
+{% block maincontent %}
+    
+    <div class="container col-md-6">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="input-row" >
+                <label for="username">Korisničko ime:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+        
+            <div class="input-row">
+                <label for="password">Šifra:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+        
+            {% if messages %}
+                <ul class="messages" style="text-align: center;">
+                    {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                            <span style="font-weight: bold; color: red;">{{ message }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+                    
+            <div class="input-row">
+                <input type="submit" value="Prijavi se" class="login-button btn-wrap btn-outline-linear" id="register-button">
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        document.getElementById('register-button').addEventListener('click', function(event) {
+            // Za svako polje u formi
+            var inputs = document.querySelectorAll('input, select, textarea');
+            for (var i = 0; i < inputs.length; i++) {
+                // Provera da li je polje required i da li je prazno
+                if (inputs[i].hasAttribute('required') && inputs[i].value.trim() === '') {
+                    alert('Morate popuniti sva obavezna polja.');
+                    event.preventDefault(); // Zaustavljanje slanja forme
+                    return;
+                }
+            }
+    
+    // Preusmeravanje na index.html
+    window.location.href = 'index_reg.html';
+        });
+    </script>
+    
+{% endblock %}

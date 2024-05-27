@@ -1,0 +1,70 @@
+{% extends 'base_nav_bar.html' %}
+
+{% load static %}
+
+
+
+{% block maincontent %}
+     {% block profilemore %}
+    {% endblock %}
+<div class="container mt-5">
+
+     <div class="text-center">
+              <img src="{{ image }}" alt="Profile Picture" class="img-fluid circle-rounded mb-3 profile-img">
+              <h4 class="mb-4">@{{ username }}</h4>
+
+     </div>
+   
+        <div id="profileusage" class="row">
+            <div class="col-md-3 col-sm-6 text-center">
+                <a href="#" onclick="submitForm('{{ username }}', '{% url 'profile_info' %}')" class="custom-card" id="information">
+                    <h5 class="custom-card-title">Informacije</h5>
+                </a>
+            </div>
+            {% if request.user.is_authenticated %}
+                {% if myprofile %}
+                <div class="col-md-3 col-sm-6 text-center">
+                    <a href="#" onclick="submitForm('{{ username }}', '{% url 'profile_collection' %}')" class="custom-card" id="collection">
+                        <h5 class="custom-card-title">Moja kolekcija</h5>
+                    </a>
+                </div>
+                {% endif %}
+            {% endif %}
+            {% if type == "kreator"%}
+            <div class="col-md-3 col-sm-6 text-center">
+                <a href="#" onclick="submitForm('{{ username }}', '{% url 'profile_portfolio' %}')" class="custom-card" id="portfolio">
+                    <h5 class="custom-card-title">Portfolio</h5>
+                </a>
+            </div>
+            {% endif %}
+
+            {% if type == "kreator" or type == "kolekcionar" %}
+
+            <div class="col-md-3 col-sm-6 text-center">
+                <a href="#" onclick="submitForm('{{ username }}', '{% url 'profile_exhibitions' %}')" class="custom-card" id="exhibitions">
+                    <h5 class="custom-card-title">Izlozbe</h5>
+                </a>
+            </div>
+
+            {% endif %}
+
+        </div>
+        </div>
+     </div>
+        <form id="profileForm" method="post" action="" style="display: none;">
+            {% csrf_token %}
+            <input type="hidden" name="username" id="usernameInput">
+        </form>
+
+        <script>
+            function submitForm(username, action) {
+                document.getElementById("usernameInput").value = username;
+                document.getElementById("profileForm").action = action;
+                document.getElementById("profileForm").submit();
+            }
+        </script>
+{% block profilecontent %}
+    {% endblock %}
+
+{% endblock %}
+

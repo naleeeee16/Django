@@ -1,0 +1,178 @@
+{% extends 'base_nav_bar.html' %}
+
+
+{% block additional_style %}
+    <style>
+        /* Dodatni stil za centriranje i postavljanje slika */
+        .swiper-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .swiper-slide {
+            width: 25%;
+            flex-shrink: 0;
+        }
+
+        /* Dodatni stil za carousel-item */
+        .carousel-item {
+            min-height: 280px;
+        }
+    </style>
+ <style>
+    /* Dodatni stil za prilagođavanje izgleda */
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .profile-container {
+        background-color: #fff;
+        padding: 20px;
+        margin-top: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-picture {
+        max-width: 150px;
+        border-radius: 50%;
+        margin-bottom: 20px;
+    }
+
+    .profile-info label {
+        font-weight: bold;
+    }
+
+    .user-options ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .user-options li {
+        margin-bottom: 10px;
+    }
+
+    .info-row{
+        font-size: 30px;
+    }
+
+    .rating {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.rating > input {
+    display: none;
+}
+
+.rating > label {
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.rating > label:before {
+    content: '\2605';
+    font-size: 36px;
+}
+
+.rating > input:checked ~ label:before,
+.rating > input:checked ~ label ~ label:before {
+    content: '\2606';
+}
+
+</style>
+
+<style>
+  #myCarousel1,
+  #myCarousel2 {
+      margin-bottom: 20px;
+  }
+</style>
+
+{%  endblock %}
+
+
+{% block maincontent %}
+    {%  load static %}
+        <div class="padding-medium">
+            <div class="container">
+                <div class="row ">
+                    <div class="col-md-5 col-sm-12">
+                        <img src="{{ img }}"  alt="Slide 1" style="width: 512px;height: 512px">
+                    </div>
+                    <div class="col-md-7 col-sm-12">
+     <form method="post" action ='{% url 'submit_change_info' %}' enctype="multipart/form-data">
+        {% csrf_token %}
+            <div class="container col-md-7">
+                <div id="postaviDatoteku" style="display: inline-block; font-size: 30px;">
+                   Postavi novu profilnu sliku
+                </div>
+
+                <div id="uploadForm" style="display:block;">
+                    <label for="fileUpload">Izaberi sliku:</label>
+                    <input type="file" id="fileUpload" name="fileUpload"><br>
+                </div>
+         <div id="uploadForm" style="display:block;">
+            Izmena lozinke:
+        </div>
+            <div class="input-row" >
+                <label for="stara-lozinka">Stara lozinka:</label>
+                <input type="password" id="stara-lozinka" name="stara-lozinka" >
+            </div>
+
+            <div class="input-row" >
+                <label for="nova-lozinka">Nova lozinka:</label>
+                <input type="password" id="nova-lozinka" name="nova-lozinka" >
+            </div>
+
+            <div class="input-row">
+                <label for="potvrda-lozinke">Ponovite lozinku:</label>
+                <input type="password" id="potvrda-lozinke" name="potvrda-lozinke" >
+            </div>
+
+            {% if messages %}
+                <ul class="messages" style="text-align: center;">
+                   {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                            <span style="font-weight: bold;
+                                    color:
+                                    {% if message.tags == 'error' %}red
+                                    {% elif message.tags == 'success' %}green
+                                    {% endif %};
+                                    ">{{ message }}
+                            </span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+                    <div class="input-row" >
+                       <button type="submit" id="submitBtn" class="btn btn-lg"  type="button" style="background-color: #8D52F5;  margin: auto; margin-top: 60px">Potvrdi</button>
+                    </div>
+            </div>
+        </form>
+
+
+
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+
+<script>
+    document.getElementById('fileUpload').addEventListener('change', function() {
+    const file = this.files[0];     if (file) {
+        const reader = new FileReader(); // Kreiramo FileReader objekat
+        reader.onload = function(e) {
+            document.querySelector('.col-md-5 img').src = e.target.result; // Postavljamo izabranu sliku
+        }
+        reader.readAsDataURL(file); // Čitamo datoteku kao URL
+    }
+});
+</script>
+
+{% endblock %}

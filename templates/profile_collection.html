@@ -1,0 +1,68 @@
+{% extends 'base_profile.html' %}
+
+
+{% block profilemore %}
+<div class="container">
+      <div class="row">
+          <div class="col-lg-4 col-md-6">
+
+              <button class="btn btn-outline-linear btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Sortiraj
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" href="#" onclick="refreshPagee('{{ username }}','poImenu','{{ cena }}')">Po imenu</a>
+                  <a class="dropdown-item" href="#" onclick="refreshPagee('{{ username }}','poOceni','{{ cena }}')">Po oceni</a>
+                  <a class="dropdown-item" href="#" onclick="refreshPagee('{{ username }}','poVrednosti','{{ cena }}')">Po vrednosti</a>
+              </div>
+
+
+
+          </div>
+      </div>
+  </div>
+
+{%  endblock %}
+{% block profilecontent %}
+<div class="container mt-5">
+    <header>Ukupna vrednost kolekcije: {{ cena|floatformat:2 }}  ETH </header>
+       <div class="row">
+  {% for nft in nfts %}
+    <div class="col-md-3 mb-4">
+      <div class="album-item">
+        <a href="{% url 'nft_review' nft.nft.idnft%}">
+          {% if nft.data %}
+    <img src="{{ nft.data.nft.image_url }}"  alt="Slide 1" style="width: 300px;height: 300px">
+ {% else %}
+     <img src="{{ nft.nft.slika.url }}"  alt="Slide 1" style="width: 300px;height: 300px">
+ {% endif %}
+        </a>
+        <div class="caption text-center">{{ nft.nft.naziv }}</div>
+      </div>
+    </div>
+    {% if forloop.counter|divisibleby:4 and not forloop.last %}
+      </div><div class="row">
+    {% endif %}
+  {% endfor %}
+    </div>
+</div>
+
+<form id="sortiraj" method="post" action="{% url 'collection_sort' %}" style="display: none;">
+            {% csrf_token %}
+            <input type="hidden" name="sort" id="sort">
+            <input type="hidden" name="nfts" id="nfts">
+            <input type="hidden" name="cena" id="cena">
+            <input type="hidden" name="username" id="username">
+            <input type="hidden" name="pageType" id="pageType">
+        </form>
+ <script>
+            function refreshPagee(username,sortType,cena) {
+                console.log("username passed to function: ",username);  // Dodajte ovo za debugging
+                document.getElementById("username").value = username;
+                document.getElementById("sort").value = sortType;
+                document.getElementById("cena").value = cena;
+                document.getElementById("pageType").value = "collection";
+        console.log("Username set in hidden input: ", document.getElementById("usernameInput").value);  // Dodajte ovo za debugging
+        document.getElementById("sortiraj").submit();
+            }
+        </script>
+{%  endblock %}

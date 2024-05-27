@@ -1,0 +1,87 @@
+{% extends 'base_nav_bar.html' %}
+
+
+
+{% block maincontent %}
+    
+  {% if message %}
+          <script>
+        alert("Ne postoji korisnik!")
+        </script>>
+    {% endif %}
+
+    {% load static %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-6">
+                
+                <button class="btn btn-outline-linear btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Sortiraj
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#" onclick="refreshPagee('poImenu')">Po imenu</a>
+                    <a class="dropdown-item" href="#" onclick="refreshPagee('poOceni')">Po oceni</a>
+                    <a class="dropdown-item" href="#" onclick="refreshPagee('poVelicini')">Po velicini</a>
+                    <a class="dropdown-item" href="#" onclick="refreshPagee('poVrednosti')">Po vrednosti</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% for izlozba in izlozbe %}
+<div class="container mt-5">
+    <div  style="color: whitesmoke;">
+            {{ izlozba.naziv }}
+          </div>
+    <div id="myCarousel-{{ forloop.counter }}" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {% for nft in izlozba.nfts %}
+                {% if forloop.first %}
+                    <div class="carousel-item active">
+                        <div class="row">
+                {% elif forloop.counter0|divisibleby:4 %}
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="row">
+                {% endif %}
+                            <div class="col-md-3 mb-4">
+                                <div class="album-item">
+                                    <a href="{% url 'exhibition_review' izlozba.id %}">
+                                        {% if nft.data %}
+                                            <img src="{{ nft.data.nft.image_url }} " alt="NFT Image" style="width: 300px;height: 300px">
+                                        {% else %}
+                                            <img src="{{ nft.nft.slika.url }}" alt="NFT Image" style="width: 300px;height: 300px">
+                                        {% endif %}
+                                    </a>
+                                    <div class="caption text-center">{{ nft.nft.naziv }}</div>
+                                </div>
+                            </div>
+                {% endfor %}
+                        </div>
+                    </div>
+        </div>
+        <a class="carousel-control-prev" href="#myCarousel-{{ forloop.counter }}" role="button" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </a>
+        <a class="carousel-control-next" href="#myCarousel-{{ forloop.counter }}" role="button" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </a>
+    </div>
+</div>
+{% endfor %}
+<form id="sortiraj" method="post" action="{% url 'index' %}" style="display: none;">
+            {% csrf_token %}
+            <input type="hidden" name="sort" id="sort">
+            <input type="hidden" name="username" id="username">
+        </form>
+    <script>
+            function refreshPagee(sortType) {
+                console.log("username passed to function: ",username);  // Dodajte ovo za debugging
+                document.getElementById("sort").value = sortType;
+        console.log("Username set in hidden input: ", document.getElementById("username").value);  // Dodajte ovo za debugging
+        document.getElementById("sortiraj").submit();
+            }
+        </script>
+    
+{% endblock %}
+

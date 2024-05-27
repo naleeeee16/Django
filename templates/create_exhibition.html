@@ -1,0 +1,113 @@
+{% extends 'base_nav_bar.html' %}
+
+{% block navbar2 %}
+     {% if request.user.is_authenticated %}
+            {% if request.user.user_type == 'kreator' %}
+
+               <li class="menu-item ">
+                        <a href="{% url 'create_nft' %}" class="item-anchor active" data-effect="Home">Kreiraj
+                            NFT</a>
+                </li>
+            {% endif %}
+
+            {% if request.user.user_type == 'kolekcionar' or  request.user.user_type == 'kreator'%}
+                <li class="menu-item ">
+                    <a href="{% url 'create_exhibition' %}" class="item-anchor active"
+                        data-effect="Home">Napravi
+                        izložbu</a>
+                </li>
+
+
+            {% endif %}
+ {% endif %}
+
+
+{% endblock %}
+
+{% block maincontent %}
+
+    <form method="post" id="formaIzlozba" class="center" style="text-align: center;" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="selected_nfts" id="selected_nfts" value="">
+        <div>
+            <h2>Popunjavanje Informacija o Izložbi</h2>
+
+            <!-- Forma za informacije o izložbi -->
+
+              <label for="ime">Ime Izložbe:</label>
+              <input type="text" id="ime" name="ime" required><br>
+
+              <label for="opis">Opis Izložbe:</label>
+              <textarea id="opis" name="opis" rows="4" required></textarea><br>
+
+
+        </div>
+
+        <div class="container mt-5">
+            <h2 class="me-2">Izaberi Slike za Izložbu</h2>
+            <header> </header>
+            
+                <div class="row">
+                    {% for nft in nfts %}
+                    <div class="col-md-3 mb-4">
+                        <div class="album-item">
+                             <img 
+                                        {% if nft.data %}
+                                            src="{{ nft.data.nft.image_url }}"
+                                        {% else %}
+                                            src="{{ nft.nft.slika.url }}" 
+                                        {% endif %}
+                             alt="Slika" id="{{ nft.nft.idnft }}" style="width: 300px;height: 300px" onclick="selektujSliku(this)">
+                            <div class="caption text-center">{{ nft.nft.naziv }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            
+
+        </div>
+
+        <div>
+        <!-- Dugme za kreiranje izložbe -->
+            <button type="submit" id="btn1" onclick="kreirajIzlozbu()"  class="btn btn-lg" style="background-color: #8D52F5; margin-top: 58px;">Napravi Izložbu</button>
+        </div>
+
+        <script>
+            function selektujSliku(element) {
+              // Toggle klase 'selected' na kliknutu sliku
+              element.classList.toggle('selected');
+            }
+
+            function kreirajIzlozbu() {
+            // Provera da li je bar jedna slika selektovana
+            var selectedImages = document.querySelectorAll('.selected');
+            if (selectedImages.length < 1) {
+                // Ako nijedna slika nije selektovana, prikazi alert
+                alert('Morate izabrati bar jednu sliku za izložbu!');
+                return;
+            }
+
+            var imeIzlozbe = document.getElementById('ime').value.trim();
+            var opisIzlozbe = document.getElementById('opis').value.trim();
+            if (imeIzlozbe === '' || opisIzlozbe === '') {
+                // Ako ime ili opis nisu popunjeni, prikazi alert
+                alert('Morate popuniti ime i opis izložbe!');
+                return;
+            }
+
+            // Dodatne funkcionalnosti za kreiranje izložbe na osnovu selektovanih slika
+            var selectedNfts = [];
+            // Za svaku selektovanu sliku, dodaj ID NFT-a u listu
+            selectedImages.forEach(function(image) {
+                selectedNfts.push(image.id);
+            });
+
+            document.getElementById('selected_nfts').value = selectedNfts.join(',');
+
+
+            // Prikazivanje poruke ili slanje podataka serveru
+            alert('Izložba je uspešno kreirana sa selektovanim slikama!');
+            }
+        </script>
+    </form>
+{% endblock %}

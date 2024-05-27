@@ -1,0 +1,21 @@
+{%  extends 'base.html' %}
+{% block maincontent %}
+
+        <div class="container-lg my-3">
+            <div id="myCarousel2" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="d-flex justify-content-between">
+                            {% for nft in nfts %}
+                                <img src="{{ nft.slika.url }}" class="d-block w-25" alt="Slide 1">
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    
+
+
+{% endblock %}

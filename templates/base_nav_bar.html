@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{#Natalija#}
+{% load static %}
+
+
+{% block navbar1 %}
+
+
+      
+
+<li class="menu-item">
+    <form method="post" action="{% url 'profile_info' %}" class="search-form">
+        {% csrf_token %}
+        <input type="search" id="search-input" name="username" placeholder="Pretraži..." class="form-control placeholder-color" style="color: black;" required>
+        <button type="submit" class="search-btn btn btn-outline-linear btn-medium">Pretraži</button>
+    </form>
+</li>
+
+<style>
+.search-form {
+    display: flex;
+    align-items: center;
+    height: 60px;
+    padding-top: 47px;
+}
+
+.search-form input[type="search"] {
+    margin-right: 10px; /* Razmak između inputa i dugmeta */
+}
+
+.selected {
+      border: 2px solid red;
+}
+</style>
+
+
+{% endblock %}
+
+{% block navbar2 %}
+     {% if request.user.is_authenticated %}
+            {% if request.user.user_type == 'kreator' %}
+                <li class="menu-item ">
+                        <a href="{% url 'create_nft' %}" class="item-anchor active" data-effect="Home">Kreiraj NFT</a>
+                </li>
+            {% endif %}
+            {% if request.user.user_type == 'kreator' or request.user.user_type == 'kolekcionar' %}
+                <li class="menu-item ">
+                    <a href="{% url 'create_exhibition' %}" class="item-anchor active" data-effect="Home">
+                        Napravi izložbu
+                    </a>
+                </li>
+            {% endif %}
+            {% block pass_change %}
+            {% endblock %}
+     {% endif %}
+
+
+{% endblock %}
+
+
+{% block navbar3 %}
+
+    {% if request.user.is_authenticated %}
+            {% if request.user.user_type == 'admin' %}
+
+             <div class="btn-wrap d-flex my-4 my-lg-4 ">
+
+    <a href="{% url 'reg_requests' %}" class="btn btn-linear btn-medium">Zahtevi za registraciju</a>
+    <a href="{% url 'logout' %}" class="btn btn-outline-linear btn-medium m-0">Odjavi se</a>
+    </div>
+            {% else %}
+            <div class="btn-wrap d-flex my-4 my-lg-4">
+
+            <a href="#" onclick="openProfile()" class="btn btn-linear btn-medium">Moj profil</a>
+            <a href="{% url 'logout' %}" class="btn btn-outline-linear btn-medium m-0">Odjavi se</a>
+        </div>
+
+        <form id="profileForm" method="post" action="{% url 'profile_info' %}" style="display: none;">
+            {% csrf_token %}
+            <input type="hidden" name="username" id="usernameInput">
+        </form>
+                
+        <form id="openProfileForm" method="post" action="{% url 'profile_info' %}" style="display: none;">
+            {% csrf_token %}
+        </form>
+        <script>
+            function submitForm(username) {
+                console.log("Username passed to function: ", username);  // Dodajte ovo za debugging
+                document.getElementById("usernameInput").value = username;
+                console.log("Username set in hidden input: ", document.getElementById("usernameInput").value);  // Dodajte ovo za debugging
+                document.getElementById("profileForm").submit();
+            }
+
+            function openProfile(action){
+                document.getElementById("openProfileForm").submit();
+            }
+        </script>
+            {% endif %}
+
+    {% else %}
+    <div class="btn-wrap d-flex my-4 my-lg-4 ">
+        <a href="{% url 'login' %}" class="btn btn-linear btn-medium">Prijavi se</a>
+        <a href="{% url 'register' %}" class="btn btn-outline-linear btn-medium m-0">Registruj se</a>
+    </div>
+{% endif %}
+
+{% endblock %}
+
+{% block maincontent %}
+{% endblock %}
